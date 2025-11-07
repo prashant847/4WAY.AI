@@ -39,7 +39,23 @@ app.config.from_object(Config)
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable caching
 
-CORS(app)
+# 🌐 CORS Configuration - Allow frontend domains
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "http://localhost:*",
+            "http://127.0.0.1:*",
+            "https://*.onrender.com",
+            "https://fourway-ai-6.onrender.com",
+            "https://traffic-frontend-dashboard.onrender.com"
+        ],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "expose_headers": ["Content-Type"],
+        "supports_credentials": False,
+        "max_age": 3600
+    }
+})
 
 # Initialize components with error handling
 detector = None
@@ -515,6 +531,17 @@ def health_check():
         'analyzer_ready': analyzer is not None,
         'gemini_ai_ready': gemini_ai is not None
     })
+
+
+# Handle OPTIONS requests for CORS preflight
+@app.route('/api/<path:path>', methods=['OPTIONS'])
+def handle_options(path):
+    """Handle CORS preflight requests"""
+    response = jsonify({'status': 'ok'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    return response, 200
 
 
 @app.errorhandler(404)
