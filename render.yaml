@@ -1,0 +1,51 @@
+services:
+  # Backend Python Flask API
+  - type: web
+    name: traffic-backend-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.11
+      - key: PORT
+        value: 5000
+      - key: FLASK_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false  # Add this manually in Render dashboard
+    healthCheckPath: /api/health
+    autoDeploy: true
+    
+  # Frontend Static Site
+  - type: web
+    name: traffic-frontend-dashboard
+    runtime: static
+    buildCommand: echo "Static site - no build required"
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+      - path: /styles.css
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /script.js
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    envVars:
+      - key: API_BASE_URL
+        value: https://traffic-backend-api.onrender.com/api
+    autoDeploy: true
+
+# Database (if needed in future)
+# databases:
+#   - name: traffic-db
+#     plan: free
+#     databaseName: trafficdb
+#     user: trafficuser

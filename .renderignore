@@ -1,0 +1,54 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment variables (use Render's env vars instead)
+.env
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+logs/
+*.log
+
+# Test files
+test_*.py
+*_test.py
+
+# Large model files (if needed, host separately)
+# models/*.pt
+
+# Output files
+output/
+
+# Documentation (optional, keep if you want docs deployed)
+*.md
+!README.md
+
+# Windows batch files
+*.bat
+
+# Shell scripts
+*.sh

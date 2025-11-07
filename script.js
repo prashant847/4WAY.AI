@@ -1,5 +1,8 @@
 // ==================== BACKEND CONNECTION ====================
-const API_BASE_URL = 'http://localhost:5000/api';  // Flask backend
+// Use environment variable if available, otherwise use localhost for development
+const API_BASE_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api' 
+    : (window.RENDER_API_URL || 'https://traffic-backend-api.onrender.com/api');
 let updateInterval = null;
 let isProcessing = false;
 
