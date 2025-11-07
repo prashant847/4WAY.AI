@@ -41,12 +41,26 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable caching
 
 CORS(app)
 
-# Initialize components
-logger.info("Initializing YOLOv8 Vehicle Detector...")
-detector = VehicleDetector()
-logger.info("✅ Detector initialized successfully!")
-analyzer = TrafficAnalyzer()
-signal_controller = TrafficSignalController()
+# Initialize components with error handling
+detector = None
+analyzer = None
+signal_controller = None
+gemini_ai = None
+
+try:
+    logger.info("Initializing YOLOv8 Vehicle Detector...")
+    detector = VehicleDetector()
+    logger.info("✅ Detector initialized successfully!")
+except Exception as e:
+    logger.error(f"❌ Detector initialization failed: {e}. Detection features disabled.")
+    detector = None
+
+try:
+    analyzer = TrafficAnalyzer()
+    signal_controller = TrafficSignalController()
+    logger.info("✅ Traffic analyzer and signal controller ready!")
+except Exception as e:
+    logger.error(f"❌ Analyzer/Controller initialization failed: {e}")
 
 # Initialize Gemini AI
 try:
@@ -496,7 +510,10 @@ def health_check():
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
         'video_dir': str(Config.VIDEO_DIR),
-        'model': Config.MODEL_NAME
+        'model': Config.MODEL_NAME,
+        'detector_ready': detector is not None,
+        'analyzer_ready': analyzer is not None,
+        'gemini_ai_ready': gemini_ai is not None
     })
 
 
@@ -534,7 +551,15 @@ def start_live_detection():
         # Initialize detector if not already done
         if detector is None:
             logger.info("Initializing YOLOv8 detector...")
-            detector = VehicleDetector()
+            try:
+                detector = VehicleDetector()
+            except Exception as e:
+                logger.error(f"Failed to initialize detector: {e}")
+                processing_status['is_processing'] = False
+                return jsonify({
+                    'success': False,
+                    'message': f'Failed to initialize detector: {str(e)}'
+                }), 500
         
         # Start background thread for continuous processing
         import threading
