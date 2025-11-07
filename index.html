@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raipur Traffic Twin System - AI Traffic Control Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%236C5CE7'/%3E%3Ctext x='50' y='65' font-size='40' fill='white' text-anchor='middle' font-weight='bold'%3ERT%3C/text%3E%3C/svg%3E" alt="Logo">
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-traffic-light"></i>
+                </div>
+                <div class="nav-item" data-section="vehicles">
+                    <i class="fas fa-ambulance"></i>
+                </div>
+                <div class="nav-item" data-section="restrictions">
+                    <i class="fas fa-ban"></i>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <button class="areas-toggle-btn" id="areasToggle" title="Traffic Areas">
+                    <i class="fas fa-location-dot"></i>
+                    <span>Areas</span>
+                </button>
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="header-right">
+                    <div class="yolo-status" style="background: linear-gradient(135deg, #00ff00, #00cc00); padding: 8px 16px; border-radius: 20px; margin-right: 15px; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 10px rgba(0,255,0,0.3);">
+                        <i class="fas fa-robot" style="color: #000; font-size: 18px; animation: pulse 2s infinite;"></i>
+                        <span style="color: #000; font-weight: bold; font-size: 13px;">YOLO LIVE DETECTION</span>
+                    </div>
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">1</span>
+                    </div>
+                    <div class="user-profile">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='30' r='20' fill='%2300CEC9'/%3E%3Cpath d='M20 80 Q20 60 50 60 Q80 60 80 80' fill='%2300CEC9'/%3E%3C/svg%3E" alt="User">
+                    </div>
+                    <div class="date-time">
+                        <span id="date">30/10/2025</span>
+                        <span id="time">12:20:00 am</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Traffic Areas Sidebar - Right Side -->
+            <aside class="areas-sidebar right" id="areasSidebar">
+                <div class="areas-header">
+                    <button class="close-areas-btn" id="closeAreas">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <h2>Traffic Areas</h2>
+                </div>
+                <div class="areas-list">
+                    <div class="area-card active" data-area="ghadi-chowk">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%231a4d7f'/%3E%3Ctext x='100' y='75' font-size='24' fill='white' text-anchor='middle' font-weight='bold'%3EGhadi Chowk%3C/text%3E%3C/svg%3E" alt="Ghadi Chowk">
+                        <h3>Ghadi Chowk</h3>
+                        <p>Indira Chowk Area</p>
+                    </div>
+                    <div class="area-card" data-area="pandri-chowk">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%237f1a4d'/%3E%3Ctext x='100' y='75' font-size='24' fill='white' text-anchor='middle' font-weight='bold'%3EPandri%3C/text%3E%3C/svg%3E" alt="Pandri Chowk">
+                        <h3>Pandri Chowk</h3>
+                        <p>Pandri Area</p>
+                    </div>
+                    <div class="area-card" data-area="auto-stand">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%234d7f1a'/%3E%3Ctext x='100' y='75' font-size='24' fill='white' text-anchor='middle' font-weight='bold'%3EAuto Stand%3C/text%3E%3C/svg%3E" alt="Auto Stand">
+                        <h3>Auto Stand Chowk</h3>
+                        <p>Station Area</p>
+                    </div>
+                    <div class="area-card" data-area="tele-chowk">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%237f4d1a'/%3E%3Ctext x='100' y='75' font-size='24' fill='white' text-anchor='middle' font-weight='bold'%3ETele Chowk%3C/text%3E%3C/svg%3E" alt="Tele Chowk">
+                        <h3>Tele Chowk</h3>
+                        <p>Telangana Area</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Traffic Signals Grid (4 Cards) -->
+                <section class="traffic-grid">
+                    <!-- NORTH -->
+                    <div class="signal-card north">
+                        <div class="card-header">
+                            <div class="signal-indicator north"></div>
+                            <h3>NORTH</h3>
+                            <div class="card-actions">
+                                <button class="action-btn"><i class="fas fa-video"></i></button>
+                                <button class="action-btn"><i class="fas fa-cog"></i></button>
+                            </div>
+                        </div>
+                        <div class="video-placeholder" id="north-video-container">
+                            <video id="north-video" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                                <source src="/videos/lane_0.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-row">
+                                <span class="label"><i class="fas fa-car-side"></i> Vehicles:</span>
+                                <span class="value vehicles-count" id="north-vehicles">0</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label"><i class="fas fa-hourglass-half"></i> Wait Time:</span>
+                                <span class="value timing" id="north-timing">0s</span>
+                            </div>
+                            <div class="traffic-density">
+                                <span class="density-label">Traffic Density</span>
+                                <span class="density-value" style="color: #5FD068;">0%</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #5FD068 0%, #4CAF50 100%);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EAST -->
+                    <div class="signal-card east">
+                        <div class="card-header">
+                            <div class="signal-indicator east"></div>
+                            <h3>EAST</h3>
+                            <div class="card-actions">
+                                <button class="action-btn"><i class="fas fa-video"></i></button>
+                                <button class="action-btn"><i class="fas fa-cog"></i></button>
+                            </div>
+                        </div>
+                        <div class="video-placeholder emergency" id="east-video-container">
+                            <span class="emergency-badge" id="east-emergency" style="display: none;">EMERGENCY</span>
+                            <video id="east-video" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                                <source src="/videos/lane_2.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-row">
+                                <span class="label"><i class="fas fa-car-side"></i> Vehicles:</span>
+                                <span class="value vehicles-count" id="east-vehicles">0</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label"><i class="fas fa-hourglass-half"></i> Wait Time:</span>
+                                <span class="value timing" id="east-timing">0s</span>
+                            </div>
+                            <div class="traffic-density">
+                                <span class="density-label">Traffic Density</span>
+                                <span class="density-value" style="color: #5FD068;">0%</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #5FD068 0%, #4CAF50 100%);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SOUTH -->
+                    <div class="signal-card south">
+                        <div class="card-header">
+                            <div class="signal-indicator south"></div>
+                            <h3>SOUTH</h3>
+                            <div class="card-actions">
+                                <button class="action-btn"><i class="fas fa-video"></i></button>
+                                <button class="action-btn"><i class="fas fa-cog"></i></button>
+                            </div>
+                        </div>
+                        <div class="video-placeholder" id="south-video-container">
+                            <video id="south-video" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                                <source src="/videos/lane_1.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-row">
+                                <span class="label"><i class="fas fa-car-side"></i> Vehicles:</span>
+                                <span class="value vehicles-count" id="south-vehicles">0</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label"><i class="fas fa-hourglass-half"></i> Wait Time:</span>
+                                <span class="value timing" id="south-timing">0s</span>
+                            </div>
+                            <div class="traffic-density">
+                                <span class="density-label">Traffic Density</span>
+                                <span class="density-value" style="color: #5FD068;">0%</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #5FD068 0%, #4CAF50 100%);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WEST -->
+                    <div class="signal-card west">
+                        <div class="card-header">
+                            <div class="signal-indicator west"></div>
+                            <h3>WEST</h3>
+                            <div class="card-actions">
+                                <button class="action-btn"><i class="fas fa-video"></i></button>
+                                <button class="action-btn"><i class="fas fa-cog"></i></button>
+                            </div>
+                        </div>
+                        <div class="video-placeholder" id="west-video-container">
+                            <video id="west-video" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                                <source src="/videos/lane_3.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-row">
+                                <span class="label"><i class="fas fa-car-side"></i> Vehicles:</span>
+                                <span class="value vehicles-count" id="west-vehicles">0</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label"><i class="fas fa-hourglass-half"></i> Wait Time:</span>
+                                <span class="value timing" id="west-timing">0s</span>
+                            </div>
+                            <div class="traffic-density">
+                                <span class="density-label">Traffic Density</span>
+                                <span class="density-value" style="color: #5FD068;">0%</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%; background: linear-gradient(90deg, #5FD068 0%, #4CAF50 100%);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bottom Section -->
+                <div class="bottom-section">
+                    <!-- Alerts Section -->
+                    <section class="alerts-section">
+                        <h3>ALERTS !!!!</h3>
+                        <div class="alerts-container">
+                            <div class="alert-item">
+                                <i class="fas fa-ambulance"></i>
+                                <div class="alert-content">
+                                    <p class="alert-title">Ambulance detected on NORTH lane - Green corridor activated</p>
+                                    <span class="alert-time">Just now</span>
+                                </div>
+                            </div>
+                            <div class="alert-item">
+                                <i class="fas fa-ambulance"></i>
+                                <div class="alert-content">
+                                    <p class="alert-title">Ambulance detected on NORTH lane - Green corridor activated</p>
+                                    <span class="alert-time">Just now</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Right Panels -->
+                    <div class="right-panels">
+                        <!-- AI Decision Engine -->
+                        <section class="ai-engine">
+                            <h3>
+                                <i class="fas fa-brain"></i> AI Decision Engine
+                            </h3>
+                            <div class="ai-content">
+                                <div class="ai-decision" style="display: flex; align-items: center; padding: 12px; background: rgba(103, 178, 111, 0.15); border-radius: 8px; margin-bottom: 15px;">
+                                    <div class="decision-text" style="flex: 1;">
+                                        <p class="decision-title" style="margin: 0 0 4px 0; font-size: 12px; font-weight: 600; color: #67B26F;">Extending South Signal +15s</p>
+                                        <p class="decision-subtitle" style="margin: 0; font-size: 10px; color: #999;">Critical density detected (91%)</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Priority Badge -->
+                                <div class="priority-badge" style="margin: 10px 0; padding: 8px; background: rgba(255, 107, 107, 0.2); border-left: 3px solid #FF6B6B; border-radius: 4px;">
+                                    <span style="font-weight: bold; color: #FF6B6B; font-size: 11px;">PRIORITY: </span>
+                                    <span class="priority-level" style="font-size: 11px; color: #ddd;">CRITICAL</span>
+                                </div>
+                                
+                                <!-- Detailed Analysis -->
+                                <div class="analysis-section" style="margin: 12px 0; padding: 10px; background: rgba(0, 206, 201, 0.1); border-radius: 6px; border-left: 3px solid #00CEC9;">
+                                    <div style="font-size: 10px; color: #00CEC9; font-weight: bold; margin-bottom: 5px;">DETAILED ANALYSIS</div>
+                                    <p class="detailed-analysis" style="font-size: 10px; line-height: 1.5; color: #bbb; margin: 0;">
+                                        Loading detailed traffic analysis...
+                                    </p>
+                                </div>
+                                
+                                <!-- Impact Prediction -->
+                                <div class="impact-section" style="margin: 12px 0; padding: 10px; background: rgba(95, 208, 104, 0.1); border-radius: 6px; border-left: 3px solid #5FD068;">
+                                    <div style="font-size: 10px; color: #5FD068; font-weight: bold; margin-bottom: 5px;">IMPACT PREDICTION</div>
+                                    <p class="impact-prediction" style="font-size: 10px; line-height: 1.5; color: #bbb; margin: 0;">
+                                        Analyzing expected outcomes...
+                                    </p>
+                                </div>
+                                
+                                <!-- Alternative Action -->
+                                <div class="alternative-section" style="margin: 12px 0; padding: 8px; background: rgba(255, 165, 0, 0.1); border-radius: 4px; border-left: 2px solid #FFA500;">
+                                    <div style="font-size: 9px; color: #FFA500; font-weight: bold; margin-bottom: 3px;">ALTERNATIVE</div>
+                                    <p class="alternative-action" style="font-size: 9px; color: #aaa; margin: 0; line-height: 1.4;">
+                                        Backup plan loading...
+                                    </p>
+                                </div>
+                                
+                                <!-- Risk Factors -->
+                                <div class="risk-section" style="margin: 12px 0; padding: 8px; background: rgba(255, 71, 87, 0.1); border-radius: 4px; border-left: 2px solid #FF4757;">
+                                    <div style="font-size: 9px; color: #FF4757; font-weight: bold; margin-bottom: 3px;">RISK FACTORS</div>
+                                    <p class="risk-factors" style="font-size: 9px; color: #aaa; margin: 0; line-height: 1.4;">
+                                        Assessing potential risks...
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="confidence-section">
+                                <span class="confidence-label">AI Confidence</span>
+                                <span class="confidence-value">92%</span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" style="width: 92%;"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Live Traffic Analytics Graph -->
+                        <section class="traffic-analytics">
+                            <h3>
+                                <span class="analytics-title">
+                                    <i class="fas fa-chart-line"></i> Real-Time Traffic Analytics
+                                </span>
+                                <span class="live-indicator">
+                                    <span class="pulse-dot"></span>
+                                    <span class="live-text">LIVE</span>
+                                </span>
+                            </h3>
+                            <div class="analytics-controls">
+                                <button class="chart-filter active" data-chart="vehicles">
+                                    <i class="fas fa-car"></i> Vehicles
+                                </button>
+                                <button class="chart-filter" data-chart="density">
+                                    <i class="fas fa-gauge-high"></i> Density
+                                </button>
+                                <button class="chart-filter" data-chart="flow">
+                                    <i class="fas fa-wave-square"></i> Flow
+                                </button>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="trafficChart"></canvas>
+                            </div>
+                            <div class="analytics-stats">
+                                <div class="stat-card stat-peak">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-arrow-trend-up"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">PEAK TRAFFIC</div>
+                                        <div class="stat-value">
+                                            <span id="peakTraffic">0</span>
+                                            <span class="stat-unit">vehicles</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="stat-card stat-congestion">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-gauge-simple-high"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">AVG DENSITY</div>
+                                        <div class="stat-value">
+                                            <span id="avgCongestion">0</span>
+                                            <span class="stat-unit">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="stat-card stat-total">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-car-side"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">TOTAL VEHICLES</div>
+                                        <div class="stat-value">
+                                            <span id="totalVehicles">0</span>
+                                            <span class="stat-unit">now</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="stat-card stat-trend">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-chart-simple"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <div class="stat-label">TREND</div>
+                                        <div class="stat-value">
+                                            <span id="trafficTrend" style="font-size: 12px;">Stable</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Control Buttons -->
+                <section class="control-buttons">
+                    <button class="control-btn ai-mode">
+                        <i class="fas fa-robot"></i>
+                        <span>AI<br>MODE</span>
+                    </button>
+                    <button class="control-btn manual-mode">
+                        <i class="fas fa-hand"></i>
+                        <span>MANUAL<br>MODE</span>
+                    </button>
+                    <button class="control-btn emergency">
+                        <i class="fas fa-exclamation"></i>
+                        <span>EMERGENCY</span>
+                    </button>
+                    <button class="control-btn dispatch">
+                        <i class="fas fa-person"></i>
+                        <span>DISPATCH</span>
+                    </button>
+                    <button class="control-btn report">
+                        <i class="fas fa-file-alt"></i>
+                        <span>REPORT</span>
+                    </button>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Emergency Lane Selection Modal -->
+    <div id="emergencyModal" class="modal" style="display: none;">
+        <div class="modal-content" style="background: linear-gradient(135deg, #1a1a3f 0%, #0f0f23 100%); border: 2px solid #FF6B6B; border-radius: 16px; padding: 30px; max-width: 500px; margin: 100px auto; box-shadow: 0 10px 50px rgba(255, 107, 107, 0.3);">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: #FF6B6B; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    EMERGENCY MODE
+                </h2>
+                <button class="modal-close" onclick="closeEmergencyModal()" style="background: none; border: none; color: #fff; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <p style="color: #ddd; margin-bottom: 20px; font-size: 12px;">Select lane to turn GREEN (All other lanes will be RED)</p>
+            <div class="emergency-lanes" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                <button class="emergency-lane-btn" data-lane="0" onclick="selectEmergencyLane(0)" style="padding: 20px; background: rgba(255, 107, 107, 0.2); border: 2px solid #FF6B6B; border-radius: 10px; color: #fff; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <i class="fas fa-arrow-up" style="font-size: 24px;"></i>
+                    <span style="font-size: 14px; font-weight: bold;">NORTH</span>
+                </button>
+                <button class="emergency-lane-btn" data-lane="1" onclick="selectEmergencyLane(1)" style="padding: 20px; background: rgba(0, 206, 201, 0.2); border: 2px solid #00CEC9; border-radius: 10px; color: #fff; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <i class="fas fa-arrow-down" style="font-size: 24px;"></i>
+                    <span style="font-size: 14px; font-weight: bold;">SOUTH</span>
+                </button>
+                <button class="emergency-lane-btn" data-lane="2" onclick="selectEmergencyLane(2)" style="padding: 20px; background: rgba(255, 165, 0, 0.2); border: 2px solid #FFA500; border-radius: 10px; color: #fff; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <i class="fas fa-arrow-right" style="font-size: 24px;"></i>
+                    <span style="font-size: 14px; font-weight: bold;">EAST</span>
+                </button>
+                <button class="emergency-lane-btn" data-lane="3" onclick="selectEmergencyLane(3)" style="padding: 20px; background: rgba(108, 92, 231, 0.2); border: 2px solid #6C5CE7; border-radius: 10px; color: #fff; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                    <i class="fas fa-arrow-left" style="font-size: 24px;"></i>
+                    <span style="font-size: 14px; font-weight: bold;">WEST</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dispatch Notification -->
+    <div id="dispatchNotification" class="notification" style="display: none; position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #FF6B6B 0%, #FF4757 100%); padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4); z-index: 10000; max-width: 400px; animation: slideIn 0.5s ease;">
+        <div style="display: flex; align-items: start; gap: 15px;">
+            <i class="fas fa-exclamation-circle" style="font-size: 32px; color: #fff;"></i>
+            <div>
+                <h3 style="color: #fff; font-size: 14px; margin-bottom: 8px;">🚨 TRAFFIC POLICE DISPATCH ALERT</h3>
+                <p id="dispatchMessage" style="color: #fff; font-size: 11px; line-height: 1.5; margin-bottom: 10px;"></p>
+                <button onclick="closeDispatchNotification()" style="background: rgba(255, 255, 255, 0.2); border: 1px solid #fff; color: #fff; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 10px;">ACKNOWLEDGED</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <style>
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 9999;
+        backdrop-filter: blur(10px);
+    }
+    
+    .emergency-lane-btn:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.5);
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    </style>
+</body>
+</html>

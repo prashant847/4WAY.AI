@@ -1,0 +1,28 @@
+# Core Dependencies
+flask>=3.0.0
+flask-cors>=4.0.0
+opencv-python>=4.8.0
+numpy>=1.26.0
+ultralytics>=8.0.0
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Advanced Detection & Tracking
+filterpy>=1.4.5
+scipy>=1.11.0
+supervision>=0.26.0
+
+# Database & API
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Image Processing
+pillow>=10.0.0
+matplotlib>=3.8.0
+
+# Logging & Monitoring
+loguru>=0.7.0
+
+# Utilities
+pyyaml>=6.0.0
+tqdm>=4.66.0

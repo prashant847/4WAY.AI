@@ -1,0 +1,55 @@
+# Directories
+videos/
+output/
+models/
+logs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Model files (large)
+*.pt
+*.pth
+*.onnx
+*.weights
+
+# Video files (can be large)
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Output files
+*.json
+*.png
+*.jpg
+*.jpeg
+
+# Test files
+test_*.py
+temp/
