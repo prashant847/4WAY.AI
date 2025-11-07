@@ -1112,6 +1112,20 @@ def get_traffic_prediction():
         'current_avg': int(current_avg),
         'timestamp': datetime.now().isoformat()
     })
+# ============================================
+# Gunicorn Entry Point
+# This runs when the app is imported by Gunicorn
+# ============================================
+# Initialize startup message when app is loaded
+logger.info("="*60)
+logger.info("🚦 Advanced Traffic Management System Backend")
+logger.info("="*60)
+logger.info(f"Video Directory: {Config.VIDEO_DIR}")
+logger.info(f"Output Directory: {Config.OUTPUT_DIR}")
+logger.info(f"Model: {Config.MODEL_NAME}")
+logger.info(f"Confidence Threshold: {Config.CONFIDENCE_THRESHOLD}")
+logger.info("="*60)
+logger.info("✅ Flask app ready for Gunicorn")
 
 
 if __name__ == '__main__':
