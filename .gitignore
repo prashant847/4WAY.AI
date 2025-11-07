@@ -59,11 +59,11 @@ models/*.onnx
 models/*.weights
 !models/.gitkeep
 
-# Video Files (Too large for git)
-videos/*.mp4
-videos/*.avi
-videos/*.mov
-videos/*.mkv
+# Video Files - NOW INCLUDED FOR DEPLOYMENT
+# videos/*.mp4
+# videos/*.avi
+# videos/*.mov
+# videos/*.mkv
 !videos/.gitkeep
 
 # Output & Results
