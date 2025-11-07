@@ -3,27 +3,32 @@ Main Flask Application
 Advanced Traffic Management System Backend
 """
 import os
+import sys
+import threading
 from flask import Flask, request, jsonify, send_file, Response
 from flask_cors import CORS
 from pathlib import Path
-import cv2
 from datetime import datetime
 from loguru import logger
-import sys
 
-from config import Config
-from vehicle_detector import VehicleDetector
-from traffic_analyzer import TrafficAnalyzer
-from signal_controller import TrafficSignalController
-from ai_gemini import GeminiAI
+# Import cv2 for video streaming (lightweight, fast import)
+try:
+    import cv2
+except ImportError:
+    cv2 = None
+    logger.warning("⚠️ OpenCV not available - video streaming disabled")
 
-# Configure logging
+# Configure logging first
 logger.remove()
 logger.add(
     sys.stdout,
     format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan> - <level>{message}</level>",
     level="INFO"
 )
+
+# Import config only
+from config import Config
+
 logger.add(
     Config.LOGS_DIR / "traffic_system_{time}.log",
     rotation="500 MB",
@@ -31,7 +36,7 @@ logger.add(
     level="DEBUG"
 )
 
-# Initialize Flask app
+# Initialize Flask app FIRST (fast startup)
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -57,34 +62,64 @@ CORS(app, resources={
     }
 })
 
-# Initialize components with error handling
+logger.info("✅ Flask app initialized - starting background component loading...")
+
+# Global component references (loaded in background)
 detector = None
 analyzer = None
 signal_controller = None
 gemini_ai = None
+components_loaded = False
+components_loading = True
 
-try:
-    logger.info("Initializing YOLOv8 Vehicle Detector...")
-    detector = VehicleDetector()
-    logger.info("✅ Detector initialized successfully!")
-except Exception as e:
-    logger.error(f"❌ Detector initialization failed: {e}. Detection features disabled.")
-    detector = None
+# Background initialization function
+def initialize_components():
+    """Initialize heavy components in background thread"""
+    global detector, analyzer, signal_controller, gemini_ai, components_loaded, components_loading
+    
+    logger.info("🔄 Background initialization starting...")
+    
+    try:
+        # Import heavy modules only in background
+        logger.info("Importing cv2...")
+        import cv2
+        
+        logger.info("Importing vehicle detector...")
+        from vehicle_detector import VehicleDetector
+        from traffic_analyzer import TrafficAnalyzer
+        from signal_controller import TrafficSignalController
+        from ai_gemini import GeminiAI
+        
+        logger.info("Initializing YOLOv8 Vehicle Detector...")
+        detector = VehicleDetector()
+        logger.info("✅ Detector initialized successfully!")
+    except Exception as e:
+        logger.error(f"❌ Detector initialization failed: {e}. Detection features disabled.")
+        detector = None
 
-try:
-    analyzer = TrafficAnalyzer()
-    signal_controller = TrafficSignalController()
-    logger.info("✅ Traffic analyzer and signal controller ready!")
-except Exception as e:
-    logger.error(f"❌ Analyzer/Controller initialization failed: {e}")
+    try:
+        analyzer = TrafficAnalyzer()
+        signal_controller = TrafficSignalController()
+        logger.info("✅ Traffic analyzer and signal controller ready!")
+    except Exception as e:
+        logger.error(f"❌ Analyzer/Controller initialization failed: {e}")
 
-# Initialize Gemini AI
-try:
-    gemini_ai = GeminiAI()
-    logger.info("🤖 Gemini AI ready for smart decisions!")
-except Exception as e:
-    logger.warning(f"⚠️ Gemini AI initialization failed: {e}. Using fallback logic.")
-    gemini_ai = None
+    # Initialize Gemini AI
+    try:
+        gemini_ai = GeminiAI()
+        logger.info("🤖 Gemini AI ready for smart decisions!")
+    except Exception as e:
+        logger.warning(f"⚠️ Gemini AI initialization failed: {e}. Using fallback logic.")
+        gemini_ai = None
+    
+    components_loaded = True
+    components_loading = False
+    logger.info("✅ All components loaded successfully!")
+
+# Start background initialization
+init_thread = threading.Thread(target=initialize_components, daemon=True)
+init_thread.start()
+logger.info("🚀 Background initialization thread started")
 
 # Global state
 processing_status = {
@@ -232,6 +267,7 @@ def process_videos():
         # Initialize detector if not already done
         if detector is None:
             logger.info("Initializing vehicle detector...")
+            from vehicle_detector import VehicleDetector
             detector = VehicleDetector()
         
         # Get video sources
@@ -527,6 +563,8 @@ def health_check():
         'timestamp': datetime.now().isoformat(),
         'video_dir': str(Config.VIDEO_DIR),
         'model': Config.MODEL_NAME,
+        'components_loading': components_loading,
+        'components_loaded': components_loaded,
         'detector_ready': detector is not None,
         'analyzer_ready': analyzer is not None,
         'gemini_ai_ready': gemini_ai is not None
@@ -579,6 +617,7 @@ def start_live_detection():
         if detector is None:
             logger.info("Initializing YOLOv8 detector...")
             try:
+                from vehicle_detector import VehicleDetector
                 detector = VehicleDetector()
             except Exception as e:
                 logger.error(f"Failed to initialize detector: {e}")
