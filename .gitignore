@@ -1,55 +1,116 @@
-# Directories
-videos/
-output/
-models/
-logs/
+# ============================================
+# RENDER DEPLOYMENT - Optimized .gitignore
+# ============================================
+
+# Python Cache & Bytecode
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
 *.pyo
 *.pyd
 .Python
 
-# Virtual Environment
+# Virtual Environments
 venv/
+.venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
-# IDE
+# IDE & Editor Files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.project
+.pydevproject
+*.sublime-project
+*.sublime-workspace
 
-# Environment
+# Environment Variables
 .env
 .env.local
+.env.*.local
 
-# OS
+# Operating System Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# Logs
+# Logs & Temporary Files
+logs/
 *.log
-
-# Model files (large)
-*.pt
-*.pth
-*.onnx
-*.weights
-
-# Video files (can be large)
-*.mp4
-*.avi
-*.mov
-*.mkv
-
-# Output files
-*.json
-*.png
-*.jpg
-*.jpeg
-
-# Test files
-test_*.py
 temp/
+tmp/
+*.tmp
+
+# Large Model Files (Download on server)
+models/*.pt
+models/*.pth
+models/*.onnx
+models/*.weights
+!models/.gitkeep
+
+# Video Files (Too large for git)
+videos/*.mp4
+videos/*.avi
+videos/*.mov
+videos/*.mkv
+!videos/.gitkeep
+
+# Output & Results
+output/*.json
+output/*.txt
+output/*.png
+output/*.jpg
+output/*.jpeg
+!output/.gitkeep
+
+# Test Files (Not needed in production)
+test_*.py
+*_test.py
+
+# Windows Batch Files (Development only)
+*.bat
+!install.bat
+
+# Build & Distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Coverage Reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Documentation Drafts (Keep essential docs only)
+ARCHITECTURE.md
+IMPLEMENTATION_COMPLETE.md
+INDEX.md
+PERFORMANCE_ENHANCEMENTS.md
+PROJECT_SUMMARY.md
+SYSTEM_READY.md
+
+# Example & Demo Files
+api_client_example.py
+gui_app.py
+play_with_detection.py
+process_videos_visual.py
+RUN_ME_FOR_VIDEOS.py
+organize_videos.bat
